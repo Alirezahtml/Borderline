@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>نقشه هوشمند و یکپارچه</title>
+    <title>نقشه نهایی با مرزهای دقیق</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
@@ -16,7 +16,7 @@
             --glass-bg: rgba(35, 35, 35, 0.75);
             --text-color: #f5f5f7;
             --success-color: #34c759;
-            --flag-fill-opacity: 0.7; /* شفافیت پرچم */
+            --flag-fill-opacity: 0.75; /* شفافیت پرچم */
         }
         body, html {
             margin: 0; padding: 0; width: 100%; height: 100%;
@@ -47,11 +47,6 @@
             width: 22px; height: 22px; margin-left: 10px;
             cursor: pointer; display: flex; align-items: center; justify-content: center;
         }
-        .search-container .icon {
-            fill: var(--text-color); width: 100%; height: 100%;
-            opacity: 0.7; transition: opacity 0.2s;
-        }
-        .search-container .icon-container:hover .icon { opacity: 1; }
         .spinner {
             width: 18px; height: 18px;
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -65,7 +60,6 @@
             position: absolute; left: 25px; top: 50%; transform: translateY(-50%);
             display: flex; flex-direction: column; gap: 10px;
             z-index: 1000;
-            transition: opacity 0.3s, transform 0.3s;
         }
         .control-box {
             background: var(--glass-bg); border-radius: 22px; border: 1px solid rgba(255, 255, 255, 0.1);
@@ -82,21 +76,13 @@
             border-radius: 50%;
         }
         .control-box button:hover, a.control-box:hover { background-color: rgba(255, 255, 255, 0.1); }
-        .control-box button.active { box-shadow: 0 0 10px #00aaff; background-color: rgba(0, 170, 255, 0.2); }
-        .control-box .icon { fill: var(--text-color); width: 20px; height: 20px; }
-        .instagram-icon { width: 24px; height: 24px; margin: 5px; opacity: 0.8; }
-        a.control-box:hover .instagram-icon { opacity: 1; }
         .separator { width: 24px; height: 1px; background-color: rgba(255, 255, 255, 0.2); }
 
-        body.ui-hidden .search-container, body.ui-hidden .custom-controls {
-            opacity: 0; pointer-events: none; transform: translateY(-50%) scale(0.95);
-        }
-
         .neon-border {
-            stroke: var(--neon-red); stroke-width: 3px; stroke-opacity: 1;
+            stroke: var(--neon-red); stroke-width: 2.5px; stroke-opacity: 1;
             fill-opacity: var(--flag-fill-opacity);
-            filter: drop-shadow(0 0 5px var(--neon-red));
-            stroke-dasharray: 2000; stroke-dashoffset: 2000;
+            filter: drop-shadow(0 0 4px var(--neon-red));
+            stroke-dasharray: 4000; stroke-dashoffset: 4000;
             animation: draw-line 4s ease-out forwards;
         }
         .neon-border-simple { /* استایل برای غیر-کشورها */
@@ -131,7 +117,7 @@
     <div id="map-container">
         <div id="toast"></div>
         <div class="search-container">
-            <input type="text" id="location-input" placeholder="مثال: Iran یا Tehran یا Iran + Iraq">
+            <input type="text" id="location-input" placeholder="نام کشور یا شهر را وارد کنید...">
             <div id="icon-container" class="icon-container">
                 <svg id="search-icon" class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
             </div>
@@ -142,80 +128,77 @@
                 <div class="separator"></div>
                 <button id="zoom-out">−</button>
             </div>
-            <div class="control-box">
-                <button id="toggle-layer">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M12,16L19.36,10.27L21,9L12,2L3,9L4.63,10.27L12,16M12,18.54L4.63,12.81L3,14.07L12,21.07L21,14.07L19.37,12.8L12,18.54Z" /></svg>
-                </button>
-            </div>
-             <div class="control-box">
-                <button id="multi-location-toggle">
-                     <svg class="icon" viewBox="0 0 24 24"><path d="M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42L8.62,10.5L7.5,11.62L5.42,9.53C5.15,9.08 5,8.56 5,8M19,8C18.44,8 17.92,8.15 17.47,8.42L15.38,10.5L16.5,11.62L18.58,9.53C18.85,9.08 19,8.56 19,8M12,3.5A5.5,5.5 0 0,0 6.5,9C6.5,10.31 7.04,11.5 7.91,12.38L6,14.29V20H18V14.29L16.09,12.38C16.96,11.5 17.5,10.31 17.5,9A5.5,5.5 0 0,0 12,3.5Z" /></svg>
-                </button>
-            </div>
-            <a href="https://www.instagram.com/dy3o.n" target="_blank" class="control-box">
-                <svg class="icon instagram-icon" viewBox="0 0 24 24"><path d="M7.8,2H16.2C19.4,2 22,4.6 22,7.8V16.2A5.8,5.8 0 0,1 16.2,22H7.8C4.6,22 2,19.4 2,16.2V7.8A5.8,5.8 0 0,1 7.8,2M7.6,4A3.6,3.6 0 0,0 4,7.6V16.4C4,18.39 5.61,20 7.6,20H16.4A3.6,3.6 0 0,0 20,16.4V7.6C20,5.61 18.39,4 16.4,4H7.6M17.25,5.5A1.25,1.25 0 0,1 18.5,6.75A1.25,1.25 0 0,1 17.25,8A1.25,1.25 0 0,1 16,6.75A1.25,1.25 0 0,1 17.25,5.5M12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" /></svg>
-            </a>
-            <div class="control-box fullscreen-box">
-                 <button id="fullscreen-toggle">
-                     <svg class="icon" viewBox="0 0 24 24"><path d="M5,15H7V19H11V21H5V15M7,5H5V9H3V5H5V3H9V5H7M19,21H17V19H13V17H19V21M17,5V3H13V5H15V9H17V5Z" /></svg>
-                 </button>
-            </div>
         </div>
         <div id="location-map"></div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let featureLayers = [];
+            let featureLayer = null;
             let isSearching = false;
-            let multiLocationMode = false;
+            let countriesData = null; // برای نگهداری لیست کشورها
+            let countryBorders = null; // برای نگهداری مرزهای دقیق کشورها
 
             const locationInput = document.getElementById('location-input');
             const iconContainer = document.getElementById('icon-container');
             const toast = document.getElementById('toast');
-            const multiLocationToggle = document.getElementById('multi-location-toggle');
             const searchIconHTML = iconContainer.innerHTML;
             const spinnerHTML = '<div class="spinner"></div>';
             
-            const layers = [
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; CARTO' }),
-                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: 'Tiles &copy; Esri' }),
-                L.tileLayer('https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',{ maxZoom: 20, subdomains:['mt0','mt1','mt2','mt3'], attribution: '&copy; Google' }),
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap' })
-            ];
-            const layerNames = ["تاریک", "ماهواره‌ای", "ترکیبی", "ساده"];
-            let currentLayerIndex = 0;
+            const map = L.map('location-map', { zoomControl: false }).setView([30, 0], 2);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; CARTO',
+                subdomains: 'abcd',
+                maxZoom: 20
+            }).addTo(map);
 
-            const map = L.map('location-map', { zoomControl: false, layers: [layers[0]] }).setView([30, 0], 2);
-            
             const svg = d3.select(map.getPanes().overlayPane).select("svg");
             const svgDefs = svg.append("defs");
 
+            // --- Event Listeners ---
             iconContainer.addEventListener('click', handleSearch);
             locationInput.addEventListener('keyup', (event) => {
                 if (event.key === 'Enter') handleSearch();
             });
-            multiLocationToggle.addEventListener('click', toggleMultiLocationMode);
             document.getElementById('zoom-in').addEventListener('click', () => map.zoomIn());
             document.getElementById('zoom-out').addEventListener('click', () => map.zoomOut());
-            document.getElementById('toggle-layer').addEventListener('click', cycleMapLayer);
-            document.getElementById('fullscreen-toggle').addEventListener('click', () => document.body.classList.toggle('ui-hidden'));
-
-            function toggleMultiLocationMode() {
-                multiLocationMode = !multiLocationMode;
-                multiLocationToggle.classList.toggle('active', multiLocationMode);
-                if (multiLocationMode) {
-                    showToast("حالت چندمکانی فعال شد");
-                } else {
-                    showToast("حالت چندمکانی غیرفعال شد");
-                    clearAllLayers();
+            
+            // --- Preload Data ---
+            async function preloadData() {
+                toggleLoading(true, true); // Show indefinite spinner
+                showToast("در حال بارگذاری داده‌های نقشه...");
+                try {
+                    const [bordersResponse, countriesResponse] = await Promise.all([
+                        fetch('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson'),
+                        fetch('https://restcountries.com/v3.1/all?fields=name,cca2,cca3,capital,population,flags')
+                    ]);
+                    countryBorders = await bordersResponse.json();
+                    countriesData = await countriesResponse.json();
+                    showToast("داده‌ها با موفقیت بارگذاری شد", false);
+                } catch (error) {
+                    console.error("Failed to preload data:", error);
+                    showToast("خطا در بارگذاری داده‌های اولیه", true);
+                } finally {
+                     toggleLoading(false);
                 }
             }
 
-            function clearAllLayers() {
-                featureLayers.forEach(layer => map.removeLayer(layer));
-                featureLayers = [];
+            // --- Core Functions ---
+            function clearLayer() {
+                if (featureLayer) {
+                    map.removeLayer(featureLayer);
+                    featureLayer = null;
+                }
                 svgDefs.selectAll("*").remove();
+            }
+            
+            function toggleLoading(loading, isInitial = false) {
+                isSearching = loading;
+                if(isInitial){
+                   iconContainer.innerHTML = spinnerHTML; 
+                } else {
+                   iconContainer.innerHTML = loading ? spinnerHTML : searchIconHTML;
+                }
             }
 
             function showToast(message, isError = false) {
@@ -224,111 +207,101 @@
                 setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 4000);
             }
 
-            function toggleLoading(loading) {
-                isSearching = loading;
-                iconContainer.innerHTML = loading ? spinnerHTML : searchIconHTML;
-            }
-
             async function handleSearch() {
-                const query = locationInput.value.trim();
-                if (!query || isSearching) return;
+                const query = locationInput.value.trim().toLowerCase();
+                if (!query || isSearching || !countriesData || !countryBorders) {
+                    if(!countriesData || !countryBorders) showToast("داده‌های نقشه هنوز بارگذاری نشده‌اند. لطفاً صبر کنید.", true);
+                    return;
+                };
                 
                 toggleLoading(true);
-                
-                if (!multiLocationMode) {
-                    clearAllLayers();
-                }
-                
-                const locationsToSearch = multiLocationMode ? query.split('+').map(name => name.trim()).filter(name => name) : [query];
+                clearLayer();
 
-                if (locationsToSearch.length === 0) {
-                    toggleLoading(false);
-                    return;
-                }
-                
-                const promises = locationsToSearch.map(name => findAndDrawLocation(name));
-                const results = await Promise.allSettled(promises);
+                // Step 1: Try to find as a country from our pre-loaded accurate list
+                const country = findCountry(query);
 
-                const successfulLayers = featureLayers.length;
-                if (successfulLayers > 0) {
-                     const group = new L.featureGroup(featureLayers);
-                     map.flyToBounds(group.getBounds(), { padding: [50, 50], maxZoom: 10 });
+                if (country) {
+                    await drawCountry(country);
+                } else {
+                    // Step 2: If not a country, search as a general location using Nominatim
+                    await searchAndDrawGeneralLocation(query);
                 }
-                
-                const failedCount = results.filter(r => r.status === 'rejected').length;
-                if(failedCount > 0) {
-                    showToast(`${failedCount} مکان یافت نشد`, true);
-                }
-
                 toggleLoading(false);
             }
-            
-            async function findAndDrawLocation(locationName) {
-                // Step 1: Search Nominatim for the location and its boundary
-                const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(locationName)}&polygon_geojson=1&limit=1`;
-                const nominatimResponse = await fetch(nominatimUrl);
-                const nominatimData = await nominatimResponse.json();
 
-                if (!nominatimData || nominatimData.length === 0 || !nominatimData[0].geojson) {
-                    return Promise.reject(new Error(`Location not found: ${locationName}`));
+            function findCountry(query) {
+                return countriesData.find(c => 
+                    c.name.common.toLowerCase() === query ||
+                    c.name.official.toLowerCase() === query ||
+                    (c.cca2 && c.cca2.toLowerCase() === query) ||
+                    (c.cca3 && c.cca3.toLowerCase() === query)
+                );
+            }
+
+            async function drawCountry(country) {
+                const borderFeature = countryBorders.features.find(f => f.properties.ISO_A3 === country.cca3);
+                if (!borderFeature) {
+                    showToast(`مرز دقیقی برای ${country.name.common} یافت نشد.`, true);
+                    return;
                 }
 
-                const location = nominatimData[0];
-                let isCountry = location.category === 'boundary' && location.type === 'administrative' && location.addresstype === 'country';
-
-                let popupContent = `<b>${location.display_name}</b>`;
-                let styleOptions = { className: 'neon-border neon-border-simple' };
-
-                // Step 2: If it's a country, get more details (like flag)
-                if (isCountry) {
-                    try {
-                        const countryCode = location.extratags['ISO3166-1:alpha2'];
-                        const countryDetailsUrl = `https://restcountries.com/v3.1/alpha/${countryCode}?fields=name,capital,population,flags`;
-                        const countryResponse = await fetch(countryDetailsUrl);
-                        const countryData = await countryResponse.json();
-
-                        // Create flag pattern
-                        const flagUrl = countryData.flags.svg;
-                        const patternId = `flag-pattern-${countryCode}`;
-                        svgDefs.append("pattern")
-                            .attr("id", patternId)
-                            .attr("patternUnits", "objectBoundingBox")
-                            .attr("width", 1).attr("height", 1)
-                            .append("image")
-                            .attr("href", flagUrl)
-                            .attr("x", 0).attr("y", 0)
-                            .attr("width", 1).attr("height", 1)
-                            .attr("preserveAspectRatio", "xMidYMid slice");
-                        
-                        styleOptions = { className: 'neon-border', fillPattern: `url(#${patternId})` };
-                        
-                        const population = countryData.population.toLocaleString('fa-IR');
-                        popupContent = `
-                            <b>${countryData.name.common}</b><br>
-                            پایتخت: ${countryData.capital[0]}<br>
-                            جمعیت: ${population} نفر`;
-                    } catch (e) {
-                         console.warn("Could not fetch country details, showing basic info.");
-                    }
-                }
+                // Create flag pattern
+                const flagUrl = country.flags.svg;
+                const patternId = `flag-pattern-${country.cca2}`;
+                svgDefs.append("pattern")
+                    .attr("id", patternId)
+                    .attr("patternUnits", "objectBoundingBox")
+                    .attr("width", 1).attr("height", 1)
+                    .append("image")
+                    .attr("href", flagUrl)
+                    .attr("x", 0).attr("y", 0)
+                    .attr("width", 1).attr("height", 1)
+                    .attr("preserveAspectRatio", "xMidYMid slice");
                 
-                // Step 3: Draw on map
-                const layer = L.geoJSON(location.geojson, { style: styleOptions });
-                layer.bindPopup(popupContent);
-                featureLayers.push(layer);
-                layer.addTo(map);
+                const style = { className: 'neon-border', fillPattern: `url(#${patternId})` };
+                
+                featureLayer = L.geoJSON(borderFeature, { style: style });
+
+                const population = country.population.toLocaleString('fa-IR');
+                const popupContent = `
+                    <b>${country.name.common}</b><br>
+                    پایتخت: ${country.capital ? country.capital[0] : 'N/A'}<br>
+                    جمعیت: ${population} نفر`;
+                
+                featureLayer.bindPopup(popupContent);
+                featureLayer.addTo(map);
+                map.flyToBounds(featureLayer.getBounds(), { padding: [50, 50] });
             }
 
-            function cycleMapLayer() {
-                map.removeLayer(layers[currentLayerIndex]);
-                currentLayerIndex = (currentLayerIndex + 1) % layers.length;
-                map.addLayer(layers[currentLayerIndex]);
-                showToast(`نقشه ${layerNames[currentLayerIndex]} فعال شد`);
-            }
+            async function searchAndDrawGeneralLocation(query) {
+                try {
+                    const nominatimUrl = `https://nominatim.openstreetmap.org/search?format=jsonv2&q=${encodeURIComponent(query)}&polygon_geojson=1&limit=1`;
+                    const response = await fetch(nominatimUrl);
+                    const data = await response.json();
 
-            // Initial Load
-            locationInput.value = "Iran";
-            handleSearch();
+                    if (!data || data.length === 0 || !data[0].geojson) {
+                        showToast(`مکان "${query}" یافت نشد.`, true);
+                        return;
+                    }
+
+                    const location = data[0];
+                    const style = { className: 'neon-border neon-border-simple' };
+                    featureLayer = L.geoJSON(location.geojson, { style: style });
+                    featureLayer.bindPopup(`<b>${location.display_name}</b>`);
+                    featureLayer.addTo(map);
+                    map.flyToBounds(featureLayer.getBounds(), { padding: [50, 50] });
+
+                } catch (error) {
+                    console.error("Nominatim search failed:", error);
+                    showToast("خطا در جستجوی مکان.", true);
+                }
+            }
+            
+            // --- Initial Load ---
+            preloadData().then(() => {
+                locationInput.value = "Iran";
+                handleSearch();
+            });
         });
     </script>
 </body>
