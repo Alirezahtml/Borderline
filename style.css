@@ -1,0 +1,139 @@
+:root {
+    --neon-red: #ff3b30;
+    --glass-bg: rgba(35, 35, 35, 0.75);
+    --text-color: #f5f5f7;
+    --success-color: #34c759;
+    --flag-fill-opacity: 0.7; /* New variable for flag opacity */
+}
+body, html {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden; background-color: #000; font-family: 'Vazirmatn', sans-serif;
+}
+#map-container {
+    width: 100%; height: 100%; position: relative;
+}
+#location-map {
+    width: 100%; height: 100%; background-color: #111;
+}
+.search-container {
+    position: absolute; top: 20px; left: 50%; transform: translateX(-50%);
+    width: 90%; max-width: 360px; background: var(--glass-bg);
+    border-radius: 15px; border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    display: flex; align-items: center; padding: 6px 12px;
+    z-index: 1001; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: opacity 0.3s, transform 0.3s;
+}
+.search-container input {
+    flex-grow: 1; background: transparent; border: none;
+    outline: none; color: var(--text-color); font-size: 15px;
+    font-family: 'Vazirmatn', sans-serif; text-align: right;
+}
+.search-container input::placeholder { color: rgba(235, 235, 245, 0.6); }
+.search-container .icon-container {
+    width: 22px; height: 22px; margin-left: 10px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.search-container .icon {
+    fill: var(--text-color); width: 100%; height: 100%;
+    opacity: 0.7; transition: opacity 0.2s;
+}
+.search-container .icon-container:hover .icon { opacity: 1; }
+.spinner {
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.custom-controls {
+    position: absolute; left: 25px; top: 50%; transform: translateY(-50%);
+    display: flex; flex-direction: column; gap: 10px;
+    z-index: 1000;
+    transition: opacity 0.3s, transform 0.3s;
+}
+.control-box {
+    background: var(--glass-bg);
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+}
+.control-box button {
+    background: transparent; border: none; color: var(--text-color);
+    font-size: 22px; font-weight: 500; width: 34px; height: 34px;
+    cursor: pointer; transition: background-color 0.2s, box-shadow 0.2s;
+    line-height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+}
+.control-box button:hover, a.control-box:hover { background-color: rgba(255, 255, 255, 0.1); }
+.control-box .icon { fill: var(--text-color); width: 20px; height: 20px; }
+.instagram-icon { width: 24px; height: 24px; margin: 5px; opacity: 0.8; }
+a.control-box:hover .instagram-icon { opacity: 1; }
+.separator {
+    width: 24px;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+body.ui-hidden .search-container,
+body.ui-hidden .custom-controls {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%) scale(0.95);
+}
+
+.neon-border {
+    stroke: var(--neon-red);
+    stroke-width: 3px;
+    stroke-opacity: 1;
+    fill-opacity: var(--flag-fill-opacity); /* Use variable for opacity */
+    filter: drop-shadow(0 0 5px var(--neon-red));
+    stroke-dasharray: 2000;
+    stroke-dashoffset: 2000;
+    animation: draw-line 5s ease-out forwards;
+}
+
+/* The fill animation is now handled by the fill-opacity transition */
+@keyframes draw-line { to { stroke-dashoffset: 0; } }
+
+#toast {
+    position: absolute; top: -100px; left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 10px;
+    background-color: var(--success-color);
+    color: white;
+    font-weight: 500;
+    z-index: 2000;
+    transition: top 0.5s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+#toast.show { top: 20px; }
+#toast.error { background-color: var(--neon-red); }
+
+.leaflet-popup-content-wrapper, .leaflet-popup-tip {
+    background: var(--glass-bg);
+    color: var(--text-color);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.leaflet-popup-content {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 10px !important;
+    text-align: right; /* Changed for Farsi */
+    line-height: 1.6;
+}
+.leaflet-popup-close-button { color: var(--text-color) !important; }
