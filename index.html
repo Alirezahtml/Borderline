@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>نقشه حرفه‌ای با مرزهای دقیق</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="map-container">
+        <div id="toast"></div>
+        <div class="search-container">
+            <input type="text" id="location-input" placeholder="نام کشور یا شهر را وارد کنید...">
+            <div id="icon-container" class="icon-container">
+                <svg id="search-icon" class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            </div>
+        </div>
+        <div class="custom-controls">
+            <div class="control-box">
+                <button id="zoom-in">+</button>
+                <div class="separator"></div>
+                <button id="zoom-out">−</button>
+            </div>
+            <div class="control-box">
+                <button id="multi-location-toggle">
+                     <svg class="icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 5.5A3.5 3.5 0 0 1 15.5 9A3.5 3.5 0 0 1 12 12.5A3.5 3.5 0 0 1 8.5 9A3.5 3.5 0 0 1 12 5.5M5 8c.56 0 1.08.15 1.53.42L8.62 10.5 7.5 11.62 5.42 9.53A3.95 3.95 0 0 1 5 8m14 0c0 .56-.15 1.08-.42 1.53L16.5 11.62 15.38 10.5l2.09-2.08c.27-.45.42-.97.42-1.53M12 3.5A5.5 5.5 0 0 0 6.5 9c0 1.31.46 2.5 1.41 3.38L6 14.29V20h12v-5.71l-1.91-1.91c.95-.88 1.41-2.07 1.41-3.38A5.5 5.5 0 0 0 12 3.5z"/></svg>
+                </button>
+            </div>
+        </div>
+        <div id="location-map"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
